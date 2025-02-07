@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- For optimal mobile experience -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For Iqra Mulla</title>
+  <!-- Firebase Compat Libraries (Global Scope) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+  <style>
+    /* CSS Variables for Theme */
+    :root {
+      --bg-gradient: linear-gradient(270deg, #ffe6f0, #ff99cc, #ccf5ff, #99e6ff);
+      --primary-color: #ff66b2;
+      --button-bg: #ff66b2;
+      --button-hover-bg: #ff3385;
+      --container-bg: #fff;
+      --text-color: #333;
+      --border-color: #ddd;
+    }
+    /* Reset and Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: var(--bg-gradient);
+      background-size: 800% 800%;
+      animation: gradientShift 15s ease infinite;
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 1.5s ease;
+      position: relative;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    /* Main Content Container */
+    .container {
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+      padding: 20px;
+      background: var(--container-bg);
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      margin: 20px auto;
+      position: relative;
+    }
+    h1 {
+      color: var(--primary-color);
+      font-size: 2.5rem;
+      margin-bottom: 0.5em;
+      animation: fadeInText 2s ease;
+    }
+    @keyframes fadeInText {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    p {
+      font-size: 1.2rem;
+      margin: 10px 0;
+      animation: fadeInText 2s ease;
+    }
+    /* Buttons */
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 1rem;
+      color: #fff;
+      background-color: var(--button-bg);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .btn:hover, .btn:focus {
+      background-color: var(--button-hover-bg);
+      transform: scale(1.05);
+      outline: none;
+    }
+    /* Heart Animation & Floating Hearts */
+    .heart {
+      font-size: 5rem;
+      color: var(--primary-color);
+      cursor: pointer;
+      animation: heartbeat 1.5s infinite;
+      position: relative;
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    .floating-heart {
+      position: absolute;
+      font-size: 2rem;
+      color: red;
+      animation: floatUp 2s ease-out forwards;
+    }
+    @keyframes floatUp {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-100px); }
+    }
+    /* Hidden Content – using opacity and the "show" class for smooth fade */
+    .hidden-content {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      margin-top: 20px;
+    }
+    .hidden-content.show {
+      display: block;
+      opacity: 1;
+    }
+    /* Photo Gallery & Lightbox */
+    .photo-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .photo-gallery img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .photo-gallery img:hover {
+      transform: scale(1.1);
+    }
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+    .lightbox .lightbox-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      padding: 10px;
+      user-select: none;
+    }
+    .prev-button { left: 20px; }
+    .next-button { right: 20px; }
+    /* Countdown Timer */
+    .countdown {
+      margin-top: 20px;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    /* Custom Music Player */
+    .music-player { margin-top: 20px; }
+    /* Theme Switcher */
+    .theme-switcher { margin-top: 20px; }
+    /* Social Media Share Buttons */
+    .social-section {
+      display: none;
+      margin-top: 20px;
+    }
+    .social-section a {
+      margin: 0 10px;
+      text-decoration: none;
+      font-size: 2rem;
+      color: var(--primary-color);
+      transition: color 0.3s;
+    }
+    .social-section a:hover {
+      color: var(--button-hover-bg);
+    }
+    /* Animated Love Letter (Typewriter Effect) */
+    .love-letter {
+      display: none;
+      font-size: 1.2rem;
+      border: 1px solid var(--primary-color);
+      padding: 10px;
+      border-radius: 10px;
+      width: 90%;
+      margin: 20px auto;
+      white-space: pre-wrap;
+      overflow: hidden;
+    }
+    /* Parallax Section */
+    .parallax-section {
+      display: none;
+      margin-top: 20px;
+      position: relative;
+      height: 300px;
+      overflow: hidden;
+    }
+    .parallax-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 500px;
+      background: url('https://via.placeholder.com/800x500?text=Parallax+Background') center/cover no-repeat;
+      transform: translateY(-50px);
+      transition: transform 0.5s ease-out;
+    }
+    .parallax-section h2 {
+      position: relative;
+      z-index: 1;
+      margin-top: 100px;
+    }
+    /* Message Wall / Feedback */
+    .message-wall {
+      display: none;
+      margin-top: 20px;
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      border-radius: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      text-align: left;
+    }
+    .message-wall p { margin: 5px 0; }
+    .message-wall form { display: flex; flex-direction: column; }
+    .message-wall input {
+      padding: 5px;
+      font-size: 1rem;
+      margin: 5px 0;
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+    }
+    .message-wall button {
+      padding: 5px 10px;
+      font-size: 1rem;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      align-self: flex-end;
+    }
+    /* Mini Game: Catch the Hearts! */
+    #miniGameSection {
+      display: none;
+      margin-top: 20px;
+    }
+    #gameArea {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin: 0 auto;
+      background: #f0f0f0;
+      border: 2px solid var(--primary-color);
+      border-radius: 10px;
+    }
+    .game-heart {
+      position: absolute;
+      font-size: 24px;
+      cursor: pointer;
+      user-select: none;
+    }
+    /* Mini Game: Memory Match (Triplet Match) */
+    /* 12 cards (4 sets), each set must contain one "zaid", one "iqra", and one "❤️" */
+    #miniGameMemory {
+      display: none;
+      margin-top: 20px;
+    }
+    #memoryGrid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .memory-card {
+      background: var(--button-bg);
+      border-radius: 5px;
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .memory-card:hover { transform: scale(1.05); }
+    .memory-card.flipped {
+      background: var(--container-bg);
+      color: var(--primary-color);
+      transform: scale(1);
+    }
+    /* Falling Roses Effect */
+    .rose {
+      position: fixed;
+      top: -50px;
+      font-size: 24px;
+      opacity: 0.8;
+      animation: fallRose 8s linear infinite;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    @keyframes fallRose {
+      0% { transform: translateX(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateX(100px) rotate(360deg); opacity: 0; top: 110%; }
+    }
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .container { width: 90%; padding: 15px; }
+      h1 { font-size: 2rem; }
+      p { font-size: 1rem; }
+      .photo-gallery img { width: 80px; height: 80px; }
+      .music-player iframe { height: 100px; }
+      #gameArea { width: 260px; height: 260px; }
+      #memoryGrid { max-width: 90%; grid-template-columns: repeat(3, 1fr); }
+    }
+    /* Accessibility Focus Styles */
+    button:focus, input:focus, select:focus {
+      outline: 2px dashed var(--primary-color);
+    }
+    /* Lightbox Navigation Buttons */
+    .lightbox-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+      padding: 10px;
+      user-select: none;
+    }
+    .prev-button { left: 20px; }
+    .next-button { right: 20px; }
+  </style>
+</head>
+<body>
+  <!-- Main Content Container -->
+  <div id="contentContainer">
+    <div class="container">
+      <!-- Heart Animation & Like Counter -->
+      <div class="heart" onclick="incrementHeartCount(event)" aria-label="Click for heart animation">❤️</div>
+      <p id="heartCounter" aria-live="polite">Clicks: 0</p>
+      
+      <!-- Main Message -->
+      <h1>For Iqra Mulla</h1>
+      <p>Dear Iqra,</p>
+      <p>You light up my world like no one else. This page is a small way to say how special you are to me.</p>
+      <p>From your admirer, with love ❤️</p>
+      
+      <!-- Section Buttons -->
+      <div>
+        <button class="btn" onclick="showSection('surpriseContent')" aria-controls="surpriseContent">Surprise</button>
+        <button class="btn" onclick="showSection('galleryContent')" aria-controls="galleryContent">Gallery</button>
+      </div>
+      
+      <!-- Surprise Section with Fireworks -->
+      <div id="surpriseContent" class="hidden-content" role="region" aria-label="Surprise Section">
+        <p>Hi there Iqra 😁</p>
+        <p>Mohammed Zaid here wanted to say you something that I love you the most. Whatever it is, how far you go and whatever happens, I will wait till death. I just want is you and only you. You can share your problems and your happiness and everything with me. I fear to lose you, and please don't leave me. We can do this together and don't forget that I love you 😉💖 Miss little Iqra.
+
+          From your man, Mohammed Zaid Kankudti,</p>
+        <div id="fireworksContainer" aria-hidden="true"></div>
+      </div>
+      
+      <!-- Photo Gallery Section with Lightbox -->
+      <div id="galleryContent" class="hidden-content" role="region" aria-label="Photo Gallery Section">
+        <p>Full Photo Gallery:</p>
+        <div class="photo-gallery">
+          <!-- 20 Photos with Provided URLs -->
+          <img class="gallery-image" src="https://i.postimg.cc/8P3KVCnq/466105966-430562153460237-8784640548127957136-n.jpg" alt="Picture 1" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/KjjN6X7G/474482215-4739413299617337-7392424660543080734-n.jpg" alt="Picture 2" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/2ytwmHT4/474715952-467282976453937-6275387841722348899-n.jpg" alt="Picture 3" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/wv6FkR7s/474877747-1688005275462210-1867945922250224011-n.jpg" alt="Picture 4" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/3Rn1frvf/475108176-1310981216713801-4625209095696150181-n.jpg" alt="Picture 5" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/L6rTbbJS/475371976-2722278701495466-9167340913441039199-n.jpg" alt="Picture 6" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/8zMHQmv6/475390830-1155277879563326-2170494986669449877-n.jpg" alt="Picture 7" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/ZRKFNkM8/475511570-1153324639753384-5642053525111303008-n.jpg" alt="Picture 8" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/R0TLqCXC/475780752-1532744220744067-499988373422410412-n.jpg" alt="Picture 9" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/Kzq7r96d/475888920-1144760417304666-7870189088554786771-n.jpg" alt="Picture 10" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/Y0v6X6kj/475993253-593612140215318-8229047061115492274-n.jpg" alt="Picture 11" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/nrNvNXc2/476122239-1983210708867292-5105020262903457115-n.jpg" alt="Picture 12" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/MZLbnFbB/476201243-660508989686670-867627327280952445-n.jpg" alt="Picture 13" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/qMCcyxj5/476203675-591304150335306-7238300350771384672-n.jpg" alt="Picture 14" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/K8SPN3Wv/476275327-602428729168487-3585338684772291351-n.jpg" alt="Picture 15" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/sgYp0DFP/476298643-966574634983833-5736870509246247616-n.jpg" alt="Picture 16" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/s23pFdyk/476424523-1929668304103317-1459017043524386958-n.jpg" alt="Picture 17" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/zBBKBCyp/IMG-20250111-WA0014.jpg" alt="Picture 18" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/BtWKMRMw/IMG-20250111-WA0020.jpg" alt="Picture 19" onclick="openLightbox(this.src)">
+          <img class="gallery-image" src="https://i.postimg.cc/wMRN59cm/IMG-20250111-WA0023.jpg" alt="Picture 20" onclick="openLightbox(this.src)">
+        </div>
+      </div>
+      
+      <!-- Lightbox with Navigation -->
+      <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Image Lightbox">
+        <button id="prevButton" class="lightbox-button prev-button" onclick="prevImage()">&lt;</button>
+        <img id="lightboxImage" src="" alt="Enlarged image" onclick="event.stopPropagation()">
+        <button id="nextButton" class="lightbox-button next-button" onclick="nextImage()">&gt;</button>
+      </div>
+      
+      <!-- Countdown Timer -->
+      <div class="countdown" role="region" aria-label="Elapsed Time">
+        <p id="countdownTimer">Loading elapsed time...</p>
+      </div>
+      
+      <!-- Custom Music Player with Spotify Embed -->
+      <div class="music-player" role="region" aria-label="Music Player">
+        <p>Enjoy some music:</p>
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/2Hx1nqtpUPBJnPBes0OPEq?utm_source=generator&theme=0" width="100%" height="152" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+      </div>
+      
+      <!-- Theme Switcher Button -->
+      <div class="theme-switcher" role="region" aria-label="Theme Switcher">
+        <button class="btn" onclick="switchTheme()">Switch Theme</button>
+      </div>
+      
+      <!-- New Features Buttons -->
+      <div class="new-features-buttons">
+        <button class="btn" onclick="showSection('socialSection')" aria-controls="socialSection">Social Media</button>
+        <button class="btn" onclick="showSection('loveLetterSection')" aria-controls="loveLetterSection">Love Letter</button>
+        <button class="btn" onclick="showSection('parallaxSection')" aria-controls="parallaxSection">Parallax</button>
+        <button class="btn" onclick="showSection('messageWallSection')" aria-controls="messageWallSection">Message Wall</button>
+        <button class="btn" onclick="showSection('miniGameSection')" aria-controls="miniGameSection">Catch the Hearts</button>
+        <button class="btn" onclick="showSection('miniGameMemory')" aria-controls="miniGameMemory">Memory Match</button>
+      </div>
+      
+      <!-- Social Media Share Section -->
+      <div id="socialSection" class="hidden-content" role="region" aria-label="Social Media">
+        <p>Share this page:</p>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://yourpageurl.com" target="_blank" aria-label="Share on Facebook">Facebook</a>
+        <a href="https://twitter.com/intent/tweet?url=https://yourpageurl.com&text=Check%20this%20out!" target="_blank" aria-label="Share on Twitter">Twitter</a>
+        <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram">Instagram</a>
+      </div>
+      
+      <!-- Animated Love Letter Section (Typewriter Effect) -->
+      <div id="loveLetterSection" class="hidden-content" role="region" aria-label="Love Letter">
+        <div class="love-letter" id="loveLetter"></div>
+        <button class="btn" onclick="startTypewriter()">Reveal Love Letter</button>
+      </div>
+      
+      <!-- Parallax Section -->
+      <div id="parallaxSection" class="hidden-content parallax-section" role="region" aria-label="Parallax Section">
+        <div class="parallax-bg" style="background: url('https://via.placeholder.com/800x500?text=Parallax+Background') center/cover no-repeat;"></div>
+        <h2>Our Moments, Forever</h2>
+      </div>
+      
+      <!-- Message Wall / Feedback Section (Synchronized Across Devices) -->
+      <div id="messageWallSection" class="hidden-content message-wall" role="region" aria-label="Message Wall">
+        <h2>Leave a Message</h2>
+        <form id="messageForm" onsubmit="postMessage(event)">
+          <input type="text" id="messageInput" placeholder="Your message..." aria-label="Your message">
+          <button class="btn" type="submit">Post</button>
+        </form>
+        <div id="messagesContainer"></div>
+      </div>
+      
+      <!-- Mini Game: Catch the Hearts! -->
+      <div id="miniGameSection" class="hidden-content" role="region" aria-label="Mini Game: Catch the Hearts">
+        <h2>Catch the Hearts!</h2>
+        <p>Score: <span id="miniGameScore">0</span></p>
+        <div id="gameArea"></div>
+        <button class="btn" onclick="startMiniGame()">Start Game</button>
+      </div>
+      
+      <!-- Mini Game: Memory Match (Triplet Match) -->
+      <div id="miniGameMemory" class="hidden-content" role="region" aria-label="Mini Game: Memory Match">
+        <h2>Memory Match</h2>
+        <p>Match each set of three cards (one "zaid", one "iqra", and one "❤️") to gain a point. When all 4 sets are matched, you win!</p>
+        <div id="memoryGrid"></div>
+        <p id="memoryMessage"></p>
+        <button class="btn" onclick="startMemoryMatch()">New Game</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Falling Roses Effect -->
+  <script>
+    function createRose() {
+      var rose = document.createElement("div");
+      rose.classList.add("rose");
+      rose.textContent = "🌷 💕 🦢";
+      // Set a random horizontal position
+      rose.style.left = (Math.random() * window.innerWidth) + "px";
+      // Set a random animation duration between 4 and 7 seconds
+      rose.style.animationDuration = (Math.random() * 3 + 4) + "s";
+      document.body.appendChild(rose);
+      // Remove the rose after 8 seconds
+      setTimeout(function() { rose.remove(); }, 8000);
+    }
+    // Create 20 roses with a staggered start
+    for (var i = 0; i < 20; i++) {
+      setTimeout(createRose, i * 300);
+    }
+  </script>
+  
+  <!-- Global Functions (Buttons, Lightbox, Mini Games, etc.) -->
+  <script>
+    // Heart counter and floating hearts
+    function incrementHeartCount(event) {
+      var heartCount = localStorage.getItem('heartCount') ? parseInt(localStorage.getItem('heartCount')) : 0;
+      heartCount++;
+      localStorage.setItem('heartCount', heartCount);
+      document.getElementById('heartCounter').textContent = "Clicks: " + heartCount;
+      var floatingHeart = document.createElement('div');
+      floatingHeart.className = 'floating-heart';
+      floatingHeart.textContent = '💖';
+      floatingHeart.style.left = (event.clientX - 20) + 'px';
+      floatingHeart.style.top = (event.clientY - 20) + 'px';
+      document.body.appendChild(floatingHeart);
+      setTimeout(function() { floatingHeart.remove(); }, 2000);
+    }
+    
+    // Show Section Utility
+    function showSection(id) {
+      var sections = document.querySelectorAll('.hidden-content');
+      sections.forEach(function(section) {
+        section.classList.remove('show');
+        section.style.display = 'none';
+      });
+      var target = document.getElementById(id);
+      if (target) {
+        target.style.display = 'block';
+        setTimeout(function() { target.classList.add('show'); }, 10);
+      }
+    }
+    
+    // Countdown Timer: Elapsed Time Since November 22, 2024
+    var startDate = new Date("2024-11-22T00:00:00").getTime();
+    function updateElapsedTime() {
+      var now = new Date().getTime();
+      var diff = now - startDate;
+      if (diff < 0) {
+        document.getElementById('countdownTimer').textContent = "Our first talk hasn't happened yet!";
+      } else {
+        var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        document.getElementById('countdownTimer').textContent = days + "d " + hours + "h " + minutes + "m " + seconds + "s elapsed since our first talk";
+      }
+    }
+    setInterval(updateElapsedTime, 1000);
+    updateElapsedTime();
+    
+    // Fireworks for Surprise Section
+    function createFirework(x, y) {
+      var colors = ['#ff66b2', '#ff3385', '#ff99cc', '#ffccff'];
+      var firework = document.createElement('div');
+      firework.className = 'firework';
+      firework.style.left = x + "px";
+      firework.style.top = y + "px";
+      firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      document.getElementById('fireworksContainer').appendChild(firework);
+      setTimeout(function() { firework.remove(); }, 1000);
+    }
+    document.getElementById('surpriseContent').addEventListener('click', function(e) {
+      createFirework(e.clientX, e.clientY);
+    });
+    
+    // Lightbox Navigation for Photo Gallery
+    var galleryImages = [];
+    var currentImageIndex = 0;
+    function openLightbox(src) {
+      galleryImages = [];
+      var imgs = document.querySelectorAll('.gallery-image');
+      for (var i = 0; i < imgs.length; i++) {
+        galleryImages.push(imgs[i].src);
+      }
+      currentImageIndex = galleryImages.indexOf(src);
+      document.getElementById("lightboxImage").src = src;
+      document.getElementById("lightbox").style.display = "flex";
+    }
+    function closeLightbox() {
+      document.getElementById("lightbox").style.display = "none";
+    }
+    function nextImage() {
+      fadeOutIn(function() {
+        currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+        document.getElementById("lightboxImage").src = galleryImages[currentImageIndex];
+      });
+    }
+    function prevImage() {
+      fadeOutIn(function() {
+        currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+        document.getElementById("lightboxImage").src = galleryImages[currentImageIndex];
+      });
+    }
+    function fadeOutIn(callback) {
+      var img = document.getElementById("lightboxImage");
+      img.style.opacity = 0;
+      setTimeout(function() {
+        callback();
+        img.style.opacity = 1;
+      }, 500);
+    }
+    document.addEventListener("keydown", function(e) {
+      if (document.getElementById("lightbox").style.display === "flex") {
+        if (e.key === "ArrowRight") { nextImage(); }
+        if (e.key === "ArrowLeft") { prevImage(); }
+        if (e.key === "Escape") { closeLightbox(); }
+      }
+    });
+    
+    // Typewriter Effect for Love Letter
+    var loveLetterText = "My dearest Dumpling,\nUmmmm...See 1st of all i love you ♥ and i will never leave you.\nI am your's and you are mine So there is no chance of me leaving you,\nand your love fills my heart with joy.\nFand i consider you as my meharm and i have full rights over you so do you have over me,\nMohammed Zaid Kankudti.";
+    var loveLetterIndex = 0;
+    function startTypewriter() {
+      var letterElement = document.getElementById('loveLetter');
+      letterElement.style.display = 'block';
+      loveLetterIndex = 0;
+      letterElement.textContent = '';
+      typeWriter();
+    }
+    function typeWriter() {
+      var letterElement = document.getElementById('loveLetter');
+      if (loveLetterIndex < loveLetterText.length) {
+        letterElement.textContent += loveLetterText.charAt(loveLetterIndex);
+        loveLetterIndex++;
+        setTimeout(typeWriter, 100);
+      }
+    }
+    
+    // Parallax Adjustment on Scroll
+    window.addEventListener('scroll', function() {
+      var parallax = document.querySelector('.parallax-bg');
+      if (parallax) {
+        parallax.style.transform = "translateY(" + (window.scrollY * 0.5 - 50) + "px)";
+      }
+    });
+    
+    // Mini Game: Catch the Hearts!
+    function startMiniGame() {
+      var gameArea = document.getElementById("gameArea");
+      var scoreDisplay = document.getElementById("miniGameScore");
+      scoreDisplay.textContent = "0";
+      var score = 0;
+      gameArea.innerHTML = "";
+      var gameDuration = 10000; // 10 seconds
+      var spawnInterval = setInterval(function() { spawnHeart(); }, 800);
+      setTimeout(function() {
+        clearInterval(spawnInterval);
+        var hearts = document.querySelectorAll(".game-heart");
+        hearts.forEach(function(heart) { heart.remove(); });
+        alert("Catch the Hearts game over! Your score: " + score);
+      }, gameDuration);
+      
+      function spawnHeart() {
+        var heart = document.createElement("div");
+        heart.className = "game-heart";
+        heart.textContent = "❤️";
+        var areaWidth = gameArea.clientWidth;
+        var areaHeight = gameArea.clientHeight;
+        var x = Math.random() * (areaWidth - 30);
+        var y = Math.random() * (areaHeight - 30);
+        heart.style.left = x + "px";
+        heart.style.top = y + "px";
+        gameArea.appendChild(heart);
+        heart.addEventListener("click", function() {
+          score++;
+          scoreDisplay.textContent = score;
+          heart.remove();
+        });
+        setTimeout(function() { if (heart.parentNode) heart.remove(); }, 2000);
+      }
+    }
+    
+    // Mini Game: Memory Match (Triplet Match)
+    function startMemoryMatch() {
+      var memoryGrid = document.getElementById("memoryGrid");
+      memoryGrid.innerHTML = "";
+      document.getElementById("memoryMessage").textContent = "";
+      // Create 4 sets of triplets (total 12 cards); each set contains one "zaid", one "iqra", and one "❤️"
+      var items = ["zaid", "iqra", "❤️"];
+      var cards = [];
+      for (var i = 0; i < 4; i++) {
+        items.forEach(function(item) { cards.push(item); });
+      }
+      cards.sort(function() { return 0.5 - Math.random(); });
+      
+      var flippedCards = [];
+      var points = 0;
+      
+      cards.forEach(function(item) {
+        var card = document.createElement("div");
+        card.className = "memory-card";
+        card.dataset.value = item;
+        card.textContent = "";
+        card.addEventListener("click", function() {
+          if (card.classList.contains("flipped") || flippedCards.length === 3) return;
+          card.classList.add("flipped");
+          card.textContent = card.dataset.value;
+          flippedCards.push(card);
+          if (flippedCards.length === 3) {
+            var values = flippedCards.map(function(c) { return c.dataset.value; }).sort();
+            var target = ["❤️", "iqra", "zaid"].sort();
+            if (JSON.stringify(values) === JSON.stringify(target)) {
+              points++;
+              flippedCards = [];
+              if (points === 4) {
+                document.getElementById("memoryMessage").textContent = "Zaid, Iqra, and a heart – You win!";
+              }
+            } else {
+              setTimeout(function() {
+                flippedCards.forEach(function(c) {
+                  c.classList.remove("flipped");
+                  c.textContent = "";
+                });
+                flippedCards = [];
+              }, 1000);
+            }
+          }
+        });
+        memoryGrid.appendChild(card);
+      });
+    }
+  </script>
+  
+  <!-- Theme Switcher Script Block -->
+  <script>
+    var themeObjects = [
+      {
+        '--bg-gradient': 'linear-gradient(270deg, #ffe6f0, #ff99cc, #ccf5ff, #99e6ff)',
+        '--primary-color': '#ff66b2',
+        '--button-bg': '#ff66b2',
+        '--button-hover-bg': '#ff3385',
+        '--container-bg': '#fff',
+        '--text-color': '#333',
+        '--border-color': '#ddd'
+      },
+      {
+        '--bg-gradient': 'linear-gradient(270deg, #e0f7fa, #b2ebf2, #80deea, #4dd0e1)',
+        '--primary-color': '#00acc1',
+        '--button-bg': '#00acc1',
+        '--button-hover-bg': '#00838f',
+        '--container-bg': '#e0f2f1',
+        '--text-color': '#004d40',
+        '--border-color': '#b2dfdb'
+      },
+      {
+        '--bg-gradient': 'linear-gradient(270deg, #fff9c4, #fff59d, #fff176, #ffee58)',
+        '--primary-color': '#fbc02d',
+        '--button-bg': '#fbc02d',
+        '--button-hover-bg': '#f9a825',
+        '--container-bg': '#fffde7',
+        '--text-color': '#795548',
+        '--border-color': '#ffe082'
+      },
+      {
+        '--bg-gradient': 'linear-gradient(270deg, #fce4ec, #f8bbd0, #f48fb1, #f06292)',
+        '--primary-color': '#e91e63',
+        '--button-bg': '#e91e63',
+        '--button-hover-bg': '#c2185b',
+        '--container-bg': '#fce4ec',
+        '--text-color': '#880e4f',
+        '--border-color': '#f48fb1'
+      },
+      {
+        '--bg-gradient': 'linear-gradient(270deg, #e1bee7, #ce93d8, #ba68c8, #ab47bc)',
+        '--primary-color': '#9c27b0',
+        '--button-bg': '#9c27b0',
+        '--button-hover-bg': '#8e24aa',
+        '--container-bg': '#f3e5f5',
+        '--text-color': '#4a148c',
+        '--border-color': '#ce93d8'
+      },
+      {
+        '--bg-gradient': 'linear-gradient(270deg, #d1c4e9, #b39ddb, #9575cd, #7e57c2)',
+        '--primary-color': '#673ab7',
+        '--button-bg': '#673ab7',
+        '--button-hover-bg': '#5e35b1',
+        '--container-bg': '#ede7f6',
+        '--text-color': '#311b92',
+        '--border-color': '#b39ddb'
+      },
+      {
+        '--bg-gradient': 'linear-gradient(270deg, #c8e6c9, #a5d6a7, #81c784, #66bb6a)',
+        '--primary-color': '#4caf50',
+        '--button-bg': '#4caf50',
+        '--button-hover-bg': '#43a047',
+        '--container-bg': '#e8f5e9',
+        '--text-color': '#1b5e20',
+        '--border-color': '#a5d6a7'
+      },
+      {
+        '--bg-gradient': 'linear-gradient(270deg, #ffccbc, #ffab91, #ff8a65, #ff7043)',
+        '--primary-color': '#ff5722',
+        '--button-bg': '#ff5722',
+        '--button-hover-bg': '#f4511e',
+        '--container-bg': '#fbe9e7',
+        '--text-color': '#bf360c',
+        '--border-color': '#ffab91'
+      },
+      {
+        '--bg-gradient': 'linear-gradient(270deg, #d7ccc8, #bcaaa4, #a1887f, #8d6e63)',
+        '--primary-color': '#795548',
+        '--button-bg': '#795548',
+        '--button-hover-bg': '#6d4c41',
+        '--container-bg': '#efebe9',
+        '--text-color': '#3e2723',
+        '--border-color': '#bcaaa4'
+      },
+      {
+        '--bg-gradient': 'linear-gradient(270deg, #eeeeee, #e0e0e0, #bdbdbd, #9e9e9e)',
+        '--primary-color': '#607d8b',
+        '--button-bg': '#607d8b',
+        '--button-hover-bg': '#546e7a',
+        '--container-bg': '#fafafa',
+        '--text-color': '#424242',
+        '--border-color': '#e0e0e0'
+      }
+    ];
+    var currentThemeIndex = 0;
+    function applyTheme(theme) {
+      for (var key in theme) {
+        document.documentElement.style.setProperty(key, theme[key]);
+      }
+    }
+    function switchTheme() {
+      currentThemeIndex = (currentThemeIndex + 1) % themeObjects.length;
+      applyTheme(themeObjects[currentThemeIndex]);
+    }
+    // Apply the initial theme on page load
+    applyTheme(themeObjects[currentThemeIndex]);
+  </script>
+</body>
+</html>
